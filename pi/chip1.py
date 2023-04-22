@@ -73,6 +73,30 @@ class Chip1:
         dout = bits_to_int(dout)
         return dout
 
+    def write_reg(self, reg, addr, val):
+        wen = [1]
+        tgt = int_to_bits(val=0xe, bits=4)
+        reg = int_to_bits(val=reg, bits=5)
+        addr = int_to_bits(val=addr, bits=5)
+        val = int_to_bits(val=val, bits=32)
+        scan = wen + tgt + reg + addr + val
+        scan = scan + [0] * (377 - len(scan))
+        self.write(scan)
+
+    def read_reg(self, reg, addr):
+        wen = [0]
+        tgt = int_to_bits(val=0xe, bits=4)
+        reg = int_to_bits(val=reg, bits=5)
+        addr = int_to_bits(val=addr, bits=5)
+
+        scan = wen + tgt + reg + addr
+        scan = scan + [0] * (377 - len(scan))
+
+        bits = self.read(scan)
+        dout = bits[0:32]
+        dout = bits_to_int(dout)
+        return dout
+
     def write_cam(self, tgt, addr, din):
         wen = [1]
         tgt = int_to_bits(tgt, 4)
