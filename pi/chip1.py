@@ -171,7 +171,7 @@ class Chip1:
         dout = dout1 & dout2
         return dout
 
-    def cim(self, mmap, WL, WLB):
+    def cim(self, mmap, WL, WLB, cmp=1):
         wen = [0]
         tgt = int_to_bits(mmap, 4)
         MUX = 8 * [0]; MUX[0] = 1
@@ -183,7 +183,7 @@ class Chip1:
         RD = [0]
         WR = [0]
         MODE = [0]
-        CMP = [1]
+        CMP = [cmp]
 
         scan = [0] + tgt + WL + WLB + MUX + DAC + SEL + DIN + DINB + CIM + RD + WR + MODE + CMP
         scan = scan + [0] * (377 - len(scan))
