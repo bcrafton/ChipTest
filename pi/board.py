@@ -47,7 +47,7 @@ class Board:
 
         self.set_voltage('avdd_bl',   0)
         self.set_voltage('avdd_wl',   450)
-        self.set_voltage('vref',      475)
+        self.set_voltage('vref',      400)
 
         self.set_voltage('vb1',       300)
         self.set_voltage('vb0',       250)

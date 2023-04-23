@@ -116,9 +116,9 @@ class Chip1:
         scan = scan + [0] * (377 - len(scan))
         self.write(scan)
 
-    def read_cam(self, tgt, addr):
+    def read_cam(self, mmap, addr):
         wen = [0]
-        tgt = int_to_bits(tgt, 4)
+        tgt = int_to_bits(mmap, 4)
         WL = 128 * [0]; WL[addr] = 1
         WLB = 128 * [0]; WLB[addr] = 1
         MUX = 8 * [0]; MUX[0] = 1
@@ -136,7 +136,8 @@ class Chip1:
         scan = scan + [0] * (377 - len(scan))
 
         bits = self.read(scan)
-        dout = bits[32:64]
+        if mmap == 0xa: dout = bits[ 8:16]
+        else:           dout = bits[32:64]
         dout = bits_to_int(dout)
         return dout
 
