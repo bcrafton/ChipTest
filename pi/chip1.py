@@ -97,7 +97,7 @@ class Chip1:
         dout = bits_to_int(dout)
         return dout
 
-    def write_cam(self, tgt, addr, din):
+    def write_cam(self, tgt, addr, din, dinb=None):
         wen = [1]
         tgt = int_to_bits(tgt, 4)
         WL = 128 * [0]; WL[addr] = 1
@@ -106,7 +106,8 @@ class Chip1:
         DAC = [0] * 6
         SEL = [0] * 2
         DIN = int_to_bits(din, 32)
-        DINB = int_to_bits(~din, 32)
+        if dinb == None: DINB = int_to_bits(~din, 32)
+        else:            DINB = int_to_bits(dinb, 32)
         CIM = [0] * 32
         RD = [0]
         WR = [1]
