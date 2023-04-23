@@ -6,7 +6,7 @@ def spi_send(sck, mosi, bits):
     # sck.value(0)
     # mosi.value(0)
     for bit in bits:
-        print (bit, end='')
+        # print (bit, end='')
         #####################
         mosi.value(bit)
         utime.sleep(1 * 1e-6)
@@ -15,7 +15,7 @@ def spi_send(sck, mosi, bits):
         sck.value(0)
         utime.sleep(1 * 1e-6)
         #####################
-    print ()
+    # print ()
 
 def spi_write(cs, sck, mosi, address, data):
     opcode = [0,1,0,0,0]

@@ -11,10 +11,6 @@ vb1 vb0 vbl vref
 ----
 
 > set_dac(name, code) -- so we dont have to put 4mV or w.e. to get min change ?
-> access other CAM (sel=01)
-
-> figure out chip2 ?
-  > solder issues
 
 done
 ----
@@ -26,6 +22,11 @@ done
 > write masking? DIN=0, DINB=0
 
 > figure out how to use the DAC on chip ? 
+
+> figure out chip2 ?
+  > solder issues
+
+> access other CAM (sel=01)
 
 ----
 

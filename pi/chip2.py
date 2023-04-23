@@ -28,6 +28,19 @@ class Chip2:
         self.RST.value(0); utime.sleep(t)
         self.RST.value(1); utime.sleep(t)
 
+    def run(self, N=100, t=10e-9):
+        self.START.value(0); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+
+        self.START.value(1); utime.sleep(t)
+        self.CLK.value(1); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+        self.START.value(0); utime.sleep(t)
+
+        for _ in range(N):
+            self.CLK.value(1); utime.sleep(t)
+            self.CLK.value(0); utime.sleep(t)
+
     def write(self, tgt, addr, data, t=10e-9):
         wen  = [1]
         tgt  = int_to_bits(val=tgt,  bits=4)
@@ -36,9 +49,9 @@ class Chip2:
 
         # NOTE: order dosnt matter -- [tgt=0, addr=0, data=0xffffffff]
         # SEND_WORD( {1'b1, tgt, addr, data} );
-        # bits = data + addr + tgt + wen
-        bits = wen + tgt + addr + data
-        bits.reverse()
+        bits = data + addr + tgt + wen
+        # bits = wen + tgt + addr + data
+        # bits.reverse()
 
         self.CLK.value(0);  utime.sleep(t)
         self.MOSI.value(0); utime.sleep(t)
@@ -65,9 +78,9 @@ class Chip2:
 
         # NOTE: order dosnt matter -- [tgt=0, addr=0, data=0xffffffff]
         # SEND_WORD( {1'b0, tgt, addr, 32'h00000000} );
-        # bits = data + addr + tgt + wen
-        bits = wen + tgt + addr + data
-        bits.reverse()
+        bits = data + addr + tgt + wen
+        # bits = wen + tgt + addr + data
+        # bits.reverse()
 
         self.CLK.value(0);  utime.sleep(t)
         self.MOSI.value(0); utime.sleep(t)
@@ -103,7 +116,9 @@ class Chip2:
         self.SCLK.value(1);  utime.sleep(t)
         self.SCLK.value(0);  utime.sleep(t)
         ##########################################
-        print (bits)
+        dout = bits[0:32]
+        dout = bits_to_int(dout)
+        return dout
 
     def send(self, bits, t=10e-9):
         assert len(bits) == 65

@@ -11,5 +11,7 @@ board.init()
 chip = Chip2()
 chip.rst()
 
-chip.write(tgt=0, addr=0, data=0xffffffff)
-chip.read(tgt=0, addr=0)
+for i in range(32):
+    chip.write(tgt=0, addr=i, data=i)
+    dout = chip.read(tgt=0, addr=i)
+    print (hex(dout))

@@ -19,7 +19,7 @@ def dac_write(sync, sck, mosi, address, data):
     utime.sleep(1 * 10e-6)
 
     for bit in bits:
-        print (bit, end='')
+        # print (bit, end='')
         #####################
         mosi.value(bit)
         utime.sleep(1 * 10e-6)
@@ -28,7 +28,7 @@ def dac_write(sync, sck, mosi, address, data):
         sck.value(1)
         utime.sleep(1 * 10e-6)
         #####################
-    print ()
+    # print ()
 
     sync.value(1)
     utime.sleep(1 * 10e-6)
