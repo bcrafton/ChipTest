@@ -19,5 +19,5 @@ WL = [0] * 128; WLB = [0] * 128
 for i in [0, 1, 2]:
     WL[i] = 1
 
-dout = chip.cam(tgt=9, WL=WL, WLB=WLB)
+dout = chip.cam(mmap=9, WL=WL, WLB=WLB)
 print( hex(dout) )

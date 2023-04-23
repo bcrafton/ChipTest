@@ -7,6 +7,7 @@ from chip1 import *
 
 board = Board()
 board.init()
+board.set_voltage('vref', 450)
 
 chip = Chip1()
 chip.rst()
@@ -17,5 +18,5 @@ for i in range(8):
 WL = [0] * 128; WLB = [0] * 128
 for i in [0,1,2,3,4,5,6,7]:
     WL[i] = 1
-    dout = chip.cim(tgt=7, WL=WL, WLB=WLB)
+    dout = chip.cim(mmap=7, WL=WL, WLB=WLB)
     print( i, hex(dout) )
