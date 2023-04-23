@@ -1,0 +1,55 @@
+
+vb1 vb0 vbl vref
+--- --- --- ---
+200 150 250 300 
+100 300 250 150 
+0   300 250 0  
+0   400 250 0
+
+100 300 300 150 
+
+----
+
+> set_dac(name, code) -- so we dont have to put 4mV or w.e. to get min change ?
+> access other CAM (sel=01)
+
+> figure out chip2 ?
+  > solder issues
+
+done
+----
+
+> cam1 / cam6
+  > wow CAM1 actually works fine ... (0xb ... not 0x4)
+  > yeah cam6 works, output bits just not grabbed right.
+
+> write masking? DIN=0, DINB=0
+
+> figure out how to use the DAC on chip ? 
+
+----
+
+> 16 cells is 35mV apart ..
+  > makes me think the 0/1 problem is real.
+  > are we configuring everything correctly ? 
+
+----
+
+> we should setup the ams simulation ??
+  > tb_scan_mx
+    > python3 tb_scan_mx.py --build mx
+    > dosnt do any cim
+    > we can modify cam6 test
+    > gotta re-run to see waveform ... dumps in 'tb' directory
+
+  > tb_mx -> "cim"
+    > gotta re-run to see waveform ... dumps in 'tb' directory
+
+  > verilog_spice_sim
+    > pretty sure we are looking for fsdb ...
+    > cam6 works great
+    > make spice ; make run
+    > are values inverted ???
+      > values look fine WL=1, bit=0, out=1
+
+----
