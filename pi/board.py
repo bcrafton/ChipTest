@@ -29,6 +29,8 @@ class Board:
         'vb_dac':    ( [1, 1], self.CS_BIAS ),
         }
 
+        self.adc = machine.ADC(28)
+
     def init(self):
         self.CS_EN.value(1);   utime.sleep(1e-3)
         self.CS_LDO.value(1);  utime.sleep(1e-3)
@@ -42,17 +44,21 @@ class Board:
         # do 1st one twice, think its some state issue
         self.set_voltage('vdd',       790)
         self.set_voltage('vdd',       790)
-        self.set_voltage('avdd_cim',  790)
-        self.set_voltage('avdd_sram', 0)
+        self.set_voltage('avdd_cim',  820)
+        self.set_voltage('avdd_sram', 850)
 
         self.set_voltage('avdd_bl',   0)
         self.set_voltage('avdd_wl',   450)
         self.set_voltage('vref',      400)
 
-        self.set_voltage('vb1',       300)
-        self.set_voltage('vb0',       250)
+        self.set_voltage('vb1',       450)
+        self.set_voltage('vb0',       400)
         self.set_voltage('vbl',       250)
         self.set_voltage('vb_dac',    900)
+        
+        # self.reset_enable()
+        # utime.sleep(100e-3)
+        # self.set_enable()
 
     def set_voltage(self, name, value):
         if name not in self.dac.keys(): 
@@ -75,3 +81,20 @@ class Board:
         address = [0,0,0,0,1,0,0,1]
         data = [1,1,1,1,1,1,1,1]
         spi_write(self.CS_EN, self.SCK, self.MOSI, address, data)
+        
+    def reset_enable(self):
+        # iodir
+        address = [0,0,0,0,0,0,0,0]
+        data = [0,0,0,0,0,0,0,0]
+        spi_write(self.CS_EN, self.SCK, self.MOSI, address, data)
+
+        # gpio
+        address = [0,0,0,0,1,0,0,1]
+        data = [0,0,0,0,0,0,0,0]
+        spi_write(self.CS_EN, self.SCK, self.MOSI, address, data)
+
+    def read_adc(self):
+        # https://microcontrollerslab.com/raspberry-pi-pico-adc-tutorial/
+        val = self.adc.read_u16()
+        val = val / 2**16 * 3.3 / 22
+        return val

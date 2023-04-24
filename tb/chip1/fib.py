@@ -11,7 +11,8 @@ board.init()
 chip = Chip1()
 chip.rst()
 
-code = load('fib6')
+# code = load('fib6')
+code = load('fib8')
 for i, inst in enumerate(code):
     chip.write_32b(tgt=0, addr=i, din=inst)
 
