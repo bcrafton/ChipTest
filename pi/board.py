@@ -51,9 +51,9 @@ class Board:
         self.set_voltage('avdd_wl',   450)
         self.set_voltage('vref',      400)
 
-        self.set_voltage('vb1',       450)
-        self.set_voltage('vb0',       400)
-        self.set_voltage('vbl',       250)
+        self.set_voltage('vb1',       700)
+        self.set_voltage('vb0',       700)
+        self.set_voltage('vbl',       0)
         self.set_voltage('vb_dac',    900)
         
         # self.reset_enable()

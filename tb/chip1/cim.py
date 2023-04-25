@@ -15,7 +15,7 @@ chip = Chip1()
 chip.rst()
 
 board.set_voltage('vbl', 300)
-board.set_voltage('avdd_wl', 550)
+board.set_voltage('avdd_wl', 525)
 
 chip.write_reg(reg=9, addr=0, val=0xff)
 chip.write_reg(reg=9, addr=1, val=0xff)

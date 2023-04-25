@@ -26,6 +26,14 @@ class Chip1:
         self.RST.value(1); utime.sleep(t)
         self.RST.value(0); utime.sleep(t)
         self.RST.value(1); utime.sleep(t)
+        self.clear()
+
+    def clear(self):
+        cams = [5,6,7,9,10,11]
+        sels = [0,1,2,3]
+        for cam in cams:
+            for sel in sels:
+                self.write_cam(tgt=cam, addr=0, din=0, mux=0, sel=sel)
 
     def run(self, t=10e-9):
         self.START.value(0); utime.sleep(t)
@@ -97,14 +105,14 @@ class Chip1:
         dout = bits_to_int(dout)
         return dout
 
-    def write_cam(self, tgt, addr, din, dinb=None, mux=0):
+    def write_cam(self, tgt, addr, din, dinb=None, mux=0, sel=0):
         wen = [1]
         tgt = int_to_bits(tgt, 4)
         WL = 128 * [0]; WL[addr] = 1
         WLB = 128 * [0]; WLB[addr] = 1
         MUX = 8 * [0]; MUX[mux] = 1
         DAC = [0] * 6
-        SEL = [0] * 2
+        SEL = int_to_bits(sel, 2)
         DIN = int_to_bits(din, 32)
         if dinb == None: DINB = int_to_bits(~din, 32)
         else:            DINB = int_to_bits(dinb, 32)
