@@ -21,3 +21,23 @@ def load(name):
         else:        break
     f.close()
     return code
+
+def matrix(ROW, COL):
+    mat = [[0 for _ in range(COL)] for _ in range(ROW)]
+    return mat
+
+def save(name, mat):
+    f = open(name, 'w')
+    for row in mat:
+        for col, data in enumerate(row):
+            if col == (len(row) - 1): f.write('%d\n' % (data))
+            else:                     f.write('%d,'  % (data))
+    f.close()
+
+def save_hex(name, mat):
+    f = open(name, 'w')
+    for row in mat:
+        for col, data in enumerate(row):
+            if col == (len(row) - 1): f.write('%d\n' % (data))
+            else:                     f.write('%d '  % (data))
+    f.close()

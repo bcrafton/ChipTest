@@ -71,6 +71,16 @@ class Board:
         bits.reverse()
         dac_write(cs, self.SCK, self.MOSI, address, bits)
 
+    def set_dac(self, name, code):
+        if name not in self.dac.keys(): 
+            print ('No DAC named:', name)
+            return
+        
+        address, cs = self.dac[name]
+        bits = int_to_bits(val=code, bits=8)
+        bits.reverse()
+        dac_write(cs, self.SCK, self.MOSI, address, bits)
+
     def set_enable(self):
         # iodir
         address = [0,0,0,0,0,0,0,0]

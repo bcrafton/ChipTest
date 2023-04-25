@@ -5,10 +5,10 @@ what figures ?
 > (-1), (-2) BER
 > shmoo, power, power breakdown, area breakdown
 > irdrop? channel mismatch? off-state current?
+> linearity, confusion matrix
+> read disturb
 
 ----
-
-> set_dac(name, code) -- so we dont have to put 4mV or w.e. to get min change ?
 
 WLB + WL accumulation
 > and i guess adding like 0xf0 + 0x0f
@@ -20,6 +20,11 @@ running larger cam operations
 running matmul with ecache unpack and ecc
 
 running a larger matmul
+> how many registers we got ? 
+	> only 8 registers ...
+> compiler:matmul 
+	> generate matrix multiplication code
+	> no loops initially
 
 ----
 done
@@ -39,6 +44,8 @@ done
 > access other CAM (sel=01)
 
 > reading l2 cache
+
+> set_dac(name, code) -- so we dont have to put 4mV or w.e. to get min change ?
 
 ----
 
