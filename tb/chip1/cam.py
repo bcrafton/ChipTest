@@ -8,6 +8,12 @@ from chip1 import *
 board = Board()
 board.init()
 
+board.set_voltage('avdd_wl', 400)
+board.set_voltage('vref',    400)
+board.set_voltage('vbl',     300)
+board.set_voltage('vb0',     450)
+board.set_voltage('vb1',     400)
+
 chip = Chip1()
 chip.rst()
 
