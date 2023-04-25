@@ -14,8 +14,8 @@ board.init()
 chip = Chip1()
 chip.rst()
 
-board.set_voltage('vbl', 300)
-board.set_voltage('avdd_wl', 525)
+board.set_voltage('vbl', 275)
+board.set_voltage('avdd_wl', 425)
 board.set_voltage('vb1', 450)
 board.set_voltage('vb0', 400)
 
@@ -30,7 +30,7 @@ for vref in range(0, 200, 5):
 
     WL = [0] * 128; WLB = [0] * 128
     for i in range(16):
-        WL[i] = 1
+        WLB[i] = 1
         dout = chip.cim(mmap=0xa, WL=WL, WLB=WLB, mux=mux)
         dout = dout & 1
         print( dout, end=' ' )
