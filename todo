@@ -1,0 +1,44 @@
+
+what figures ?
+> 4/8/16/32
+> BER 
+> (-1), (-2) BER
+> shmoo, power, power breakdown, area breakdown
+> irdrop? channel mismatch? off-state current?
+
+----
+
+> set_dac(name, code) -- so we dont have to put 4mV or w.e. to get min change ?
+
+WLB + WL accumulation
+> and i guess adding like 0xf0 + 0x0f
+
+running larger cam operations
+> digital ones that is
+> digital cam programs ?
+
+running matmul with ecache unpack and ecc
+
+running a larger matmul
+
+----
+done
+----
+
+> cam1 / cam6
+  > wow CAM1 actually works fine ... (0xb ... not 0x4)
+  > yeah cam6 works, output bits just not grabbed right.
+
+> write masking? DIN=0, DINB=0
+
+> figure out how to use the DAC on chip ? 
+
+> figure out chip2 ?
+  > solder issues
+
+> access other CAM (sel=01)
+
+> reading l2 cache
+
+----
+

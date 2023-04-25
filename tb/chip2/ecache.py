@@ -16,6 +16,11 @@ for i in range(32):
         addr = i + (j << 12)
         data = i * 4 + j
         chip.write(tgt=12, addr=addr, data=data)
+
+for i in range(32):
+    for j in range(4):
+        addr = i + (j << 12)
         dout = chip.read(tgt=12, addr=addr)
-        print (hex(dout))
+        print (hex(dout), end=' ')
+    print ()
 
