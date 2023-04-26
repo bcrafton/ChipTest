@@ -7,8 +7,13 @@ what figures ?
 > irdrop? channel mismatch? off-state current?
 > linearity, confusion matrix
 > read disturb
+>> Mismatch, linearity
+>> Then VDD scaling, power
 
 ----
+
+compute VDD/AVDD_CIM/AVDD_SRAM
+> can even interpolate data
 
 WLB + WL accumulation
 > and i guess adding like 0xf0 + 0x0f
@@ -18,13 +23,7 @@ running larger cam operations
 > digital cam programs ?
 
 running matmul with ecache unpack and ecc
-
-running a larger matmul
-> how many registers we got ? 
-	> only 8 registers ...
-> compiler:matmul 
-	> generate matrix multiplication code
-	> no loops initially
+> AVDD_SRAM cant go below 500mV (without board changes)
 
 ----
 done
@@ -46,6 +45,13 @@ done
 > reading l2 cache
 
 > set_dac(name, code) -- so we dont have to put 4mV or w.e. to get min change ?
+
+running a larger matmul
+> how many registers we got ? 
+	> only 8 registers ...
+> compiler:matmul 
+	> generate matrix multiplication code
+	> no loops initially
 
 ----
 
