@@ -167,7 +167,11 @@ class Chip1:
         scan = [0] + tgt + WL + WLB + MUX + DAC + SEL + DIN + DINB + CIM + RD + WR + MODE + CMP
         scan = scan + [0] * (377 - len(scan))
 
-        bits = self.read(scan)
+        if mmap == 0x9:
+            bits = self.read_delay(scan)
+        else:
+            bits = self.read(scan)
+        
         if mmap == 0xa:
             dout1 = bits[24:32]
             dout2 = bits[16:24]
@@ -306,3 +310,68 @@ class Chip1:
             self.SCLK.value(0); utime.sleep(t)
         return bits
 
+    def read_delay(self, scan, t=10e-9):
+        assert len(scan) == 377
+        
+        self.MCLK.value(0)
+        self.SCLK.value(0)
+        self.SIN.value(0)
+        self.CLK.value(0)
+        self.VLD.value(0)
+        self.CAP.value(0)
+        self.START.value(0)
+        self.CLK2.value(1)
+        utime.sleep(t)
+
+        for bit in scan:
+            self.SIN.value(bit); utime.sleep(t)
+            
+            self.MCLK.value(0); utime.sleep(t)
+            self.MCLK.value(1); utime.sleep(t)
+            self.MCLK.value(0); utime.sleep(t)
+            
+            self.SCLK.value(0); utime.sleep(t)
+            self.SCLK.value(1); utime.sleep(t)
+            self.SCLK.value(0); utime.sleep(t)
+
+        self.VLD.value(1); utime.sleep(t)
+
+        self.CLK.value(1); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+        self.CLK.value(1); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+        self.CLK.value(1); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+        self.CLK.value(1); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+
+        self.CAP.value(1); utime.sleep(t)
+
+        self.MCLK.value(1); utime.sleep(t)
+        self.MCLK.value(0); utime.sleep(t)
+
+        self.CAP.value(0); utime.sleep(t)
+
+        self.SCLK.value(1); utime.sleep(t)
+        self.SCLK.value(0); utime.sleep(t)
+
+        self.VLD.value(0); utime.sleep(t)
+
+        self.CLK.value(1); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+        self.CLK.value(1); utime.sleep(t)
+        self.CLK.value(0); utime.sleep(t)
+
+        bits = []
+        for i, _ in enumerate(scan):
+            bits.append( self.SOUT.value() )
+            self.SIN.value(0); utime.sleep(t)
+            
+            self.MCLK.value(0); utime.sleep(t)
+            self.MCLK.value(1); utime.sleep(t)
+            self.MCLK.value(0); utime.sleep(t)
+            
+            self.SCLK.value(0); utime.sleep(t)
+            self.SCLK.value(1); utime.sleep(t)
+            self.SCLK.value(0); utime.sleep(t)
+        return bits
