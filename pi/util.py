@@ -1,4 +1,6 @@
 
+import random
+
 def int_to_bits(val, bits=32):
     ret = []
     for bit in range(bits):
@@ -41,3 +43,14 @@ def save_hex(name, mat):
             if col == (len(row) - 1): f.write('%d\n' % (data))
             else:                     f.write('%d '  % (data))
     f.close()
+    
+def process(data, BIT=32):
+    DAC, WL = len(data), len(data[0])
+    out = matrix(BIT, WL)
+    for dac in range(DAC):
+        for bit in range(BIT):
+            for wl in range(WL):
+                val = (data[dac][wl] >> bit) & 1
+                if val:
+                    out[bit][wl] = max(out[bit][wl], dac)
+    return out
