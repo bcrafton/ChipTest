@@ -1,0 +1,36 @@
+https://www.gibbard.me/using_the_raspberry_pi_pico_on_ubuntu/
+https://www.youtube.com/watch?v=B5rQSoOmR5w&t=81s&ab_channel=Digi-Key
+
+Hold the BOOTSEL button on the Raspberry Pi Pico, plug the USB connection on the Pico in to the development machine, then release the BOOTSEL button.
+
+if you run pico_setup.sh, it will not install minicom because we dont want vscode
+
+hello_usb.uf2 NOT hello_serial.uf2
+minicom -b 115200 -o -D /dev/ttyACM0
+
+https://www.youtube.com/watch?v=NHwMJZwRo7k
+
+-------------------------
+
+export PICO_SDK_PATH=/home/brian/Desktop/pi_pico/pico/pico-sdk
+
+cd /home/brian/Desktop/ChipTest/c/scan_chain.4;
+cmake .; make;
+
+unplug pico
+BOOTSEL [press]
+plug in pico
+
+click and drop IO.uf2
+
+then open "monitor.py"
+
+-------------------------
+
+https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf
+Chapter 1. Quick Pico Setup
+> wget https://raw.githubusercontent.com/raspberrypi/pico-setup/master/pico_setup.sh
+> chmod +x pico_setup.sh
+> ./pico_setup.sh
+
+-------------------------
