@@ -1,4 +1,24 @@
 
+(1)
+how to compute comparator mismatch ?
+> just sample VBL with 0 bitcells on ? 
+> 1 bitcell on all the way down the array ?
+
+(2) 
+run confusion matrix on 16.all data ... want to see if actually 80%
+
+(3)
+can we try running all sims in c code ?
+
+(4)
+programs with CAM / CIM
+
+(5)
+sweeps with not all 0xffffffff and WLB
+collect just random data results ? 
+
+----
+
 what figures ?
 > 4/8/16/32
 > BER 
