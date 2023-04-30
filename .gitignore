@@ -1,1 +1,15 @@
 *.png
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+elf2uf2
+generated
+IO.bin
+IO.dis
+IO.elf
+IO.elf.map
+IO.hex
+IO.uf2
+Makefile
+pico-sdk
+pioasm

@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -28,6 +29,24 @@ using namespace std;
 #define CS_AVDD 1
 #define CS_BIAS 6
 #define CS_EN   7
+
+///////////////////////////////////////////////////////////////////////////
+
+vector<uint8_t> int_to_bits(uint32_t word, uint32_t N) {
+  vector<uint8_t> bits;
+  for (int i=0; i<N; i++) {
+    bits.push_back( (word >> i) & 1 );
+  }
+  return bits;
+}
+
+uint32_t bits_to_int(vector<uint8_t> bits) {
+  uint32_t word = 0;
+  for (int i=0; i<bits.size(); i++) {
+    word = word + (bits[i] << i);
+  }
+  return word;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -119,6 +138,7 @@ class dac_t {
     this->write(id.second, id.first, code);
   }
 
+  /*
   void write(int sync, int address, int data) {
     // PD = 1
     // LDAC = 0
@@ -145,25 +165,47 @@ class dac_t {
     }
     gpio_put(sync, 1); sleep_us(1);
   }
+  */
+
+  void write(int sync, int addr, int data) {
+    // PD = 1
+    // LDAC = 0
+    // last = 0000
+    // bits = address + PD + LDAC + data + last
+
+    vector<uint8_t> _addr = int_to_bits(addr, 2);
+    reverse(_addr.begin(),_addr.end());
+
+    vector<uint8_t> _data = int_to_bits(data, 8);
+    reverse(_data.begin(),_data.end());
+
+    vector<uint8_t> PD{1};
+    vector<uint8_t> LDAC{0};
+    vector<uint8_t> last(4, 0);
+
+    vector<uint8_t> bits;
+    bits.insert(bits.end(), _addr.begin(), _addr.end());
+    bits.insert(bits.end(), PD.begin(), PD.end());
+    bits.insert(bits.end(), LDAC.begin(), LDAC.end());
+    bits.insert(bits.end(), _data.begin(), _data.end());
+    bits.insert(bits.end(), last.begin(), last.end());
+
+    /*
+    for (int i=0; i<16; i++) {
+      printf("%d", bits[i]);
+    }
+    printf("\n");
+    */
+
+    gpio_put(sync, 0); sleep_us(1);
+    for (int i=0; i<16; i++) {
+      gpio_put(MOSI, bits[i]); sleep_us(1);
+      gpio_put(SCK,  1);       sleep_us(1);
+      gpio_put(SCK,  0);       sleep_us(1);
+    }
+    gpio_put(sync, 1); sleep_us(1);
+  }
 };
-
-///////////////////////////////////////////////////////////////////////////
-
-vector<uint8_t> int_to_bits(uint32_t word, uint32_t N) {
-  vector<uint8_t> bits;
-  for (int i=0; i<N; i++) {
-    bits.push_back( (word >> i) & 1 );
-  }
-  return bits;
-}
-
-uint32_t bits_to_int(vector<uint8_t> bits) {
-  uint32_t word = 0;
-  for (int i=0; i<bits.size(); i++) {
-    word = word + (bits[i] << i);
-  }
-  return word;
-}
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -444,105 +486,103 @@ class chip1_t {
   }
 
   void write(vector<uint8_t> scan) {
-    gpio_put(MCLK,  0); 
-    gpio_put(SCLK,  0); 
-    gpio_put(SIN,   0); 
-    gpio_put(CLK,   0); 
-    gpio_put(VLD,   0); 
-    gpio_put(CAP,   0); 
-    gpio_put(START, 0); 
+    gpio_put(MCLK,  0); sleep_us(1);
+    gpio_put(SCLK,  0); sleep_us(1);
+    gpio_put(SIN,   0); sleep_us(1);
+    gpio_put(CLK,   0); sleep_us(1);
+    gpio_put(VLD,   0); sleep_us(1);
+    gpio_put(CAP,   0); sleep_us(1);
+    gpio_put(START, 0); sleep_us(1);
 
     for (int i=0; i<scan.size(); i++) {
-      gpio_put(SIN, scan[i]); 
+      gpio_put(SIN, scan[i]); sleep_us(1);
 
-      gpio_put(MCLK, 0); 
-      gpio_put(MCLK, 1); 
-      gpio_put(MCLK, 0); 
+      gpio_put(MCLK, 0); sleep_us(1);
+      gpio_put(MCLK, 1); sleep_us(1);
+      gpio_put(MCLK, 0); sleep_us(1);
 
-      gpio_put(SCLK, 0); 
-      gpio_put(SCLK, 1); 
-      gpio_put(SCLK, 0); 
+      gpio_put(SCLK, 0); sleep_us(1);
+      gpio_put(SCLK, 1); sleep_us(1);
+      gpio_put(SCLK, 0); sleep_us(1);
     }
 
-    gpio_put(VLD, 1); 
+    gpio_put(VLD, 1); sleep_us(1);
 
-    gpio_put(CLK, 1); 
-    gpio_put(CLK, 0); 
-    gpio_put(CLK, 1); 
-    gpio_put(CLK, 0); 
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
 
-    gpio_put(VLD, 0); 
+    gpio_put(VLD, 0); sleep_us(1);
 
-    gpio_put(CLK, 1); 
-    gpio_put(CLK, 0); 
-    gpio_put(CLK, 1); 
-    gpio_put(CLK, 0); 
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
   }
 
   vector<uint8_t> read(vector<uint8_t> scan) {
-    gpio_put(MCLK,  0); 
-    gpio_put(SCLK,  0); 
-    gpio_put(SIN,   0); 
-    gpio_put(CLK,   0); 
-    gpio_put(VLD,   0); 
-    gpio_put(CAP,   0); 
-    gpio_put(START, 0); 
-    gpio_put(CLK2,  1); 
+    gpio_put(MCLK,  0); sleep_us(1);
+    gpio_put(SCLK,  0); sleep_us(1);
+    gpio_put(SIN,   0); sleep_us(1);
+    gpio_put(CLK,   0); sleep_us(1);
+    gpio_put(VLD,   0); sleep_us(1);
+    gpio_put(CAP,   0); sleep_us(1);
+    gpio_put(START, 0); sleep_us(1);
+    gpio_put(CLK2,  1); sleep_us(1);
 
     for (int i=0; i<scan.size(); i++) {
-      gpio_put(SIN, scan[i]); 
+      gpio_put(SIN, scan[i]); sleep_us(1);
 
-      gpio_put(MCLK, 0); 
-      gpio_put(MCLK, 1); 
-      gpio_put(MCLK, 0); 
+      gpio_put(MCLK, 0); sleep_us(1);
+      gpio_put(MCLK, 1); sleep_us(1);
+      gpio_put(MCLK, 0); sleep_us(1);
 
-      gpio_put(SCLK, 0); 
-      gpio_put(SCLK, 1); 
-      gpio_put(SCLK, 0); 
+      gpio_put(SCLK, 0); sleep_us(1);
+      gpio_put(SCLK, 1); sleep_us(1);
+      gpio_put(SCLK, 0); sleep_us(1);
     }
 
-    gpio_put(VLD, 1); 
+    gpio_put(VLD, 1); sleep_us(1);
 
-    gpio_put(CLK, 1);
-    gpio_put(CLK, 0);
-    gpio_put(CLK, 1);
-    gpio_put(CLK2, 0);
-    gpio_put(CLK2, 1);
-    gpio_put(CLK, 0);
-    gpio_put(CLK, 1);
-    gpio_put(CLK, 0);
-    gpio_put(CLK, 1);
-    gpio_put(CLK, 0); 
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK2, 0); sleep_us(1);
+    gpio_put(CLK2, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
 
-    gpio_put(CAP, 1); 
+    gpio_put(CAP, 1); sleep_us(1);
 
-    gpio_put(MCLK, 1); 
-    gpio_put(MCLK, 0); 
+    gpio_put(MCLK, 1); sleep_us(1);
+    gpio_put(MCLK, 0); sleep_us(1);
 
-    gpio_put(CAP, 0); 
+    gpio_put(CAP, 0); sleep_us(1);
 
-    gpio_put(SCLK, 1); 
-    gpio_put(SCLK, 0); 
+    gpio_put(SCLK, 1); sleep_us(1);
+    gpio_put(SCLK, 0); sleep_us(1);
 
-    gpio_put(VLD, 0); 
+    gpio_put(VLD, 0); sleep_us(1);
 
-    gpio_put(CLK, 1); 
-    gpio_put(CLK, 0); 
-    gpio_put(CLK, 1); 
-    gpio_put(CLK, 0); 
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
+    gpio_put(CLK, 1); sleep_us(1);
+    gpio_put(CLK, 0); sleep_us(1);
 
     vector<uint8_t> bits;
     for (int i=0; i<scan.size(); i++) {
       bits.push_back( gpio_get(SOUT) );
-      gpio_put(SIN, 0); 
+      gpio_put(SIN, 0); sleep_us(1);
 
-      gpio_put(MCLK, 0); 
-      gpio_put(MCLK, 1); 
-      gpio_put(MCLK, 0); 
+      gpio_put(MCLK, 0); sleep_us(1);
+      gpio_put(MCLK, 1); sleep_us(1);
+      gpio_put(MCLK, 0); sleep_us(1);
 
-      gpio_put(SCLK, 0); 
-      gpio_put(SCLK, 1); 
-      gpio_put(SCLK, 0); 
+      gpio_put(SCLK, 0); sleep_us(1);
+      gpio_put(SCLK, 1); sleep_us(1);
+      gpio_put(SCLK, 0); sleep_us(1);
     }
 
     return bits;
@@ -607,7 +647,7 @@ int main() {
   uint32_t mux = 0;
   uint32_t sel = 0;
 
-  uint32_t N = 16;
+  uint32_t N = 8;
 
   ///////////////////////////////////
 
@@ -615,17 +655,18 @@ int main() {
 
     ///////////////////////////////////////////////////////////////////////////
 
-    for (int i=0; i<N; i++) {
+    for (int i=0; i<128; i++) {
       chip->write_cam(tgt, i, 0xffffffff, mux, sel);
     }
 
-    for (int i=0; i<N; i++) {
+    for (int i=0; i<128; i++) {
       printf("[read] %d: ", i);
       chip->read_cam(tgt, i, mux, sel);
     }
 
     for (int code=0; code<150; code++) {
       dac->set_dac("vref", code);
+      sleep_ms(10);
       printf("[cim][vref=%d]: ", code);
 
       vector<uint8_t> WL(128, 0);
@@ -638,7 +679,7 @@ int main() {
       printf("\n");
     }
 
-    for (int i=0; i<N; i++) {
+    for (int i=0; i<128; i++) {
       printf("[read] %d: ", i);
       chip->read_cam(tgt, i, mux, sel);
     }
