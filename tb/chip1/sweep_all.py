@@ -8,8 +8,9 @@ from chip1 import *
 
 tgt = 0x7
 mux = 0
+sel = 0
 offset = 112
-dac = 128
+dac = 180
 N = 16
 
 board = Board()
@@ -38,7 +39,7 @@ for avdd_wl in avdd_wls:
 
             # write 0x0f to N WLs
             for i in range(N):
-                chip.write_cam(tgt, offset + i, 0xffffffff, mux=mux)
+                chip.write_cam(tgt, offset + i, 0xffffffff, mux=mux, sel=sel)
 
             data = matrix(dac, N + 1)
 
@@ -49,12 +50,12 @@ for avdd_wl in avdd_wls:
 
                 WL = [0] * 128; WLB = [0] * 128
 
-                data[vref][0] = chip.cim(mmap=tgt, WL=WL, WLB=WLB, mux=mux)
+                data[vref][0] = chip.cim(mmap=tgt, WL=WL, WLB=WLB, mux=mux, sel=sel)
                 print( hex(data[vref][0]), end=' ' )
 
                 for i in range(N):
                     WLB[offset + i] = 1
-                    data[vref][i + 1] = chip.cim(mmap=tgt, WL=WL, WLB=WLB, mux=mux)
+                    data[vref][i + 1] = chip.cim(mmap=tgt, WL=WL, WLB=WLB, mux=mux, sel=sel)
                     print( hex(data[vref][i + 1]), end=' ' )
                 print ()
 
@@ -64,7 +65,7 @@ for avdd_wl in avdd_wls:
 
             # verify no read disturb occured on N WLs
             for i in range(N):
-                ret = chip.read_cam(tgt, offset + i, mux=mux)
+                ret = chip.read_cam(tgt, offset + i, mux=mux, sel=sel)
                 if ret != 0xffffffff:
                     print ('Read Disturb! (%x)' % (ret))
 
