@@ -125,14 +125,14 @@ class Chip1:
         scan = scan + [0] * (377 - len(scan))
         self.write(scan)
 
-    def read_cam(self, mmap, addr, mux=0):
+    def read_cam(self, mmap, addr, mux=0, sel=0):
         wen = [0]
         tgt = int_to_bits(mmap, 4)
         WL = 128 * [0]; WL[addr] = 1
         WLB = 128 * [0]; WLB[addr] = 1
         MUX = 8 * [0]; MUX[mux] = 1
         DAC = [0] * 6
-        SEL = [0] * 2
+        SEL = int_to_bits(sel, 2)
         DIN = [0] * 32
         DINB = [0] * 32
         CIM = [0] * 32
@@ -150,12 +150,12 @@ class Chip1:
         dout = bits_to_int(dout)
         return dout
 
-    def cam(self, mmap, WL, WLB, mux=0):
+    def cam(self, mmap, WL, WLB, mux=0, sel=0):
         wen = [0]
         tgt = int_to_bits(mmap, 4)
         MUX = 8 * [0]; MUX[mux] = 1
         DAC = [0] * 6
-        SEL = [0] * 2
+        SEL = int_to_bits(sel, 2)
         DIN = [0] * 32
         DINB = [0] * 32
         CIM = [0] * 32
@@ -183,12 +183,12 @@ class Chip1:
         dout = dout1 & dout2
         return dout
 
-    def cim(self, mmap, WL, WLB, mux=0, cmp=1):
+    def cim(self, mmap, WL, WLB, mux=0, sel=0, cmp=1):
         wen = [0]
         tgt = int_to_bits(mmap, 4)
         MUX = 8 * [0]; MUX[mux] = 1
         DAC = [0] * 6
-        SEL = [0] * 2
+        SEL = int_to_bits(sel, 2)
         DIN = [0] * 32
         DINB = [0] * 32
         CIM = [1] * 32
