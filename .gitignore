@@ -13,3 +13,4 @@ IO.uf2
 Makefile
 pico-sdk
 pioasm
+*.npy
