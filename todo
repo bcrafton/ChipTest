@@ -1,14 +1,11 @@
 
 (1)
-how to compute comparator mismatch ?
-> just sample VBL with 0 bitcells on ? 
-> 1 bitcell on all the way down the array ?
-
-(2) 
-run confusion matrix on 16.all data ... want to see if actually 80%
-
-(3)
-can we try running all sims in c code ?
+SRAM BER in C code (chip2)
+> how to read ecc memory into registers to compute on it
+> cant ...
+> maybe we can use the tensor core to do it ??
+> yeah I think we could craft something up, where we loop around and write memory in one location and read it somewhere else
+> to maximize memory operations
 
 (4)
 programs with CAM / CIM
@@ -72,6 +69,18 @@ running a larger matmul
 > compiler:matmul 
 	> generate matrix multiplication code
 	> no loops initially
+
+
+(1)
+how to compute comparator mismatch ?
+> just sample VBL with 0 bitcells on ? 
+> 1 bitcell on all the way down the array ?
+
+(2) 
+run confusion matrix on 16.all data ... want to see if actually 80%
+
+(3)
+can we try running all sims in c code ?
 
 ----
 
