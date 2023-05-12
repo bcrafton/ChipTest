@@ -125,6 +125,31 @@ class Chip1:
         scan = scan + [0] * (377 - len(scan))
         self.write(scan)
 
+    def write_transpose(self, tgt, WL, WLB, BL, mux=0, sel=0):
+        assert len(WL) == 128
+        assert len(WLB) == 128
+        assert BL in range(0, 32)
+
+        self._write_transpose(tgt=tgt, WL=WL, din=(1 << BL), dinb=0, mux=mux, sel=sel)
+        self._write_transpose(tgt=tgt, WL=WLB, din=0, dinb=(1 << BL), mux=mux, sel=sel)
+
+    def _write_transpose(self, tgt, WL, din, dinb, mux, sel):
+        wen = [1]
+        tgt = int_to_bits(tgt, 4)
+        MUX = 8 * [0]; MUX[mux] = 1
+        DAC = [0] * 6
+        SEL = int_to_bits(sel, 2)
+        DIN = int_to_bits(din, 32)
+        DINB = int_to_bits(dinb, 32)
+        CIM = [0] * 32
+        RD = [0]
+        WR = [1]
+        MODE = [1]
+        CMP = [1]
+        scan = wen + tgt + WL + WL + MUX + DAC + SEL + DIN + DINB + CIM + RD + WR + MODE + CMP
+        scan = scan + [0] * (377 - len(scan))
+        self.write(scan)
+
     def read_cam(self, mmap, addr, mux=0, sel=0):
         wen = [0]
         tgt = int_to_bits(mmap, 4)
