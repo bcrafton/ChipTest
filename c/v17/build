@@ -1,0 +1,5 @@
+
+# export PICO_SDK_PATH=/home/brian/Desktop/pi_pico/pico/pico-sdk
+export PICO_SDK_PATH=/home/brian/Desktop/pico/pico/pico-sdk
+cmake .;
+make
