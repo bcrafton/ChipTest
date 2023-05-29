@@ -1,0 +1,99 @@
+dac delay (2ms) --> 0
+300s --> 92s
+lets also go to SAR ADC style
+
+so do the sampling rates make sense ? 
+400 CAM samples is pretty fast.
+
+CIM 10k is pretty fast as well.
+
+but what about proportionally ?
+also what are code differences ? 
+how many scan chain calls ?
+
+oh wow, they both do 8 calls each
+CAM = 8 BL
+CIM = 8 ADC steps
+
+but CAM dosnt need the 1ms delay for DAC.
+
+----------
+
+huh CAM is 4x slower than CIM
+1000 CAMs vs 1000 CIMs
+61s vs 15s
+
+wow so writing the CAM accounts for most of it in CAM
+commented out the write
+went down to 7s (from 61)
+
+----------
+
+so it all adds up really.
+
+so we saw basically 0 performance imporveemnt by pushing CIM into C code
+
+what about CAM ??
+is it worth keeping it there ??
+>> this the last question to answer.
+
+----------
+
+[avdd_cim: 870, vref: 300]: 700/800
+[avdd_cim: 870, vref: 400]: 0/800
+[avdd_cim: 870, vref: 500]: 0/800
+[avdd_cim: 870, vref: 600]: 529/800
+[avdd_cim: 770, vref: 300]: 693/800
+[avdd_cim: 770, vref: 400]: 0/800
+[avdd_cim: 770, vref: 500]: 183/800
+[avdd_cim: 770, vref: 600]: 522/800
+[avdd_cim: 670, vref: 300]: 700/800
+[avdd_cim: 670, vref: 400]: 215/800
+[avdd_cim: 670, vref: 500]: 609/800
+[avdd_cim: 670, vref: 600]: 800/800
+[avdd_cim: 570, vref: 300]: 750/800
+[avdd_cim: 570, vref: 400]: 795/800
+[avdd_cim: 570, vref: 500]: 779/800
+[avdd_cim: 570, vref: 600]: 800/800
+209.6796886920929
+
+-----------
+
+[wl: 32, avdd_cim: 870, vref: 300]: 700/800 (0.875000)
+[wl: 32, avdd_cim: 870, vref: 400]: 0/800 (0.000000)
+[wl: 32, avdd_cim: 870, vref: 500]: 0/800 (0.000000)
+[wl: 32, avdd_cim: 870, vref: 600]: 0/800 (0.000000)
+[wl: 32, avdd_cim: 770, vref: 300]: 700/800 (0.875000)
+[wl: 32, avdd_cim: 770, vref: 400]: 0/800 (0.000000)
+[wl: 32, avdd_cim: 770, vref: 500]: 0/800 (0.000000)
+[wl: 32, avdd_cim: 770, vref: 600]: 0/800 (0.000000)
+[wl: 32, avdd_cim: 670, vref: 300]: 700/800 (0.875000)
+[wl: 32, avdd_cim: 670, vref: 400]: 12/800 (0.015000)
+[wl: 32, avdd_cim: 670, vref: 500]: 12/800 (0.015000)
+[wl: 32, avdd_cim: 670, vref: 600]: 587/800 (0.733750)
+[wl: 32, avdd_cim: 570, vref: 300]: 800/800 (1.000000)
+[wl: 32, avdd_cim: 570, vref: 400]: 800/800 (1.000000)
+[wl: 32, avdd_cim: 570, vref: 500]: 800/800 (1.000000)
+[wl: 32, avdd_cim: 570, vref: 600]: 800/800 (1.000000)
+185.71255898475647
+
+-----------
+
+monitor13b.py
+monitor20.py
+these arnt close enough ...
+what is the difference ??
+
+diff v14/dac.h v21/dac.h
+> no diff
+
+no idea why they are different
+...
+
+-----------
+
+
+
+
+
+
