@@ -92,6 +92,62 @@ no idea why they are different
 
 -----------
 
+what is speed advantage of using python (for CIM)
+when we use the SAR
+
+because if we want to get uniform distribution of samples
+then it would be useful to generate these in Python
+generate random mask with 15 matches
+and then make WL = ~mask ^ BL
+
+could be done in C, but not really that interested.
+
+because we know the distribution that would occur if we did random 16b values
+but uniform would give us better error PMF
+that we could then multiply the distribution by.
+
+-----------
+
+yeah so the speed difference is 15s vs 17s
+so no real advantage
+by using the c sweep that is.
+
+-----------
+
+so now what ? 
+i think we create uniform distribution of random samples using the masking idea
+IN PYTHON
+seems like all complex operations should be done in Python
+
+then we can figure out how to do CIM shmoo.
+
+-----------
+
+is SAR struggling to read lower codes ?
+or is it the large diff between avdd_wl and vbltgt ??
+
+-----------
+
+there is a ton of variation in the results
+trying CIM(850, 16) ... 16 times
+
+one with 100% CAM accuracy
+one with .938 CIM accuracy
+one with .890 CIM accuracy
+
+so we want to trim that variation
+
+-----------
+
+also we are seeing [4/8] have LOWER accuracy than 16
+so we gotta experiment with that
+BUT we gotta wrap these experiments up and start working on figures I think.
+
+-----------
+
+what figures do we want ? 
+
+-----------
 
 
 
