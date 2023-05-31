@@ -149,6 +149,26 @@ what figures do we want ?
 
 -----------
 
+what is the deal with these histograms
+not normal distributions at all.
+
+-----------
+
+wasnt it normal for a bit ? 
+when we had the bug in there basically
+where we called sar()
+and then swept -8 to +8 
+and basically set out = sar(start) + 8 ??
+
+i wonder if 10K (100, 100) looked normal bc
+100 not 10 ??
+
+should we use offset ? 
+to scramble things up more ??
+
+
+
+
 
 
 
