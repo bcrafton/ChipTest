@@ -63,16 +63,16 @@ for bit in data.keys():
     unique = np.unique(expected)
     for u in unique:
         where = np.where(expected == u)
-        if hist: 
-            plt.hist(measured[where], bins=range(35, 140), color=colors[u])
-        elif cdf:
-            x = np.arange(35, 140)
-            y = measured[where].reshape(-1, 1)
-            y = np.mean(x > y, axis=0)
-            plt.plot(x, y, color=colors[u])
-        else:
-            plt.scatter(expected[where], measured[where], color=colors[u])
+        plt.hist(measured[where], bins=range(35, 140), color=colors[u])
 
+    xticks = np.arange(40, 140 + 1, 25)
+    xlabels = xticks / 1.2 / 256 + 0.45
+    xlabels = xlabels * 1000
+    xlabels = xlabels.astype(int)
+    plt.xticks(xticks, xlabels)
+
+    plt.tight_layout()
+    plt.gcf().set_size_inches(5, 3)
     plt.savefig("%d.png" % (bit), dpi=300)
     plt.clf()
     plt.cla()

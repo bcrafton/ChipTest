@@ -212,18 +212,19 @@ uint32_t sar(uint32_t tgt, vector<uint8_t> WL, vector<uint8_t> WLB, uint32_t mux
 }
 
 uint32_t linear(uint32_t tgt, vector<uint8_t> WL, vector<uint8_t> WLB, uint32_t mux, uint32_t sel, uint32_t BL, uint32_t low, uint32_t high) {
+  int out = 0;
   for (int code=low; code<high; code++) {
     dac->set_dac("vref", code);
-    sleep_ms(2);
+    sleep_ms(1);
 
     uint32_t word = chip->cim(tgt, WL, WLB, mux, sel);
     word = word >> BL;
     word = word & 1;
     if (word) {
-      return code;
+      out = code;
     }
   }
-  return 0;
+  return out;
 }
 
 uint32_t mix(uint32_t tgt, vector<uint8_t> WL, vector<uint8_t> WLB, uint32_t mux, uint32_t sel, uint32_t BL) {

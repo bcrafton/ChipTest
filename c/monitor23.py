@@ -224,11 +224,11 @@ def sample_cim(N1, N2, NWL, bit):
             WLB = bits_to_int( WLB)
 
             # measured.append( sar(0xa, WL, WLB, bit) )
-            # measured.append( mix(0xa, WL, WLB, bit) )
+            measured.append( mix(0xa, WL, WLB, bit) )
 
-            vals = [ sar(0xa, WL, WLB, bit) for _ in range(5) ]
+            # vals = [ sar(0xa, WL, WLB, bit) for _ in range(5) ]
             # measured.append(np.median(vals))
-            measured.append(np.mean(vals))
+            # measured.append(np.mean(vals))
 
     measured = np.array(measured)
     expected = np.array(expected)

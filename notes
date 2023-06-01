@@ -166,9 +166,39 @@ i wonder if 10K (100, 100) looked normal bc
 should we use offset ? 
 to scramble things up more ??
 
+-----------
 
+would mux or offset be better ??
+probably offset.
+mux is worse bc u gotta set the BL_SWITCH
 
+right now we dont care about accuracy
+we care about normal distribution
+so mux and offset are good.
 
+tempted by mux now
+less likely to be effected by IR-drop ?
+should be implemented anyways ??
+
+-----------
+
+was the normal dist data we got a bug ??
+> monitor22 / v23
+> def a bug ... but wonder if actually normal.
+> wasnt normal lol.
+
+yes it was normal !!!
+and that "bug" WASNT a bug ... the "fix" we made was actually wrong.
+must have messed something up
+
+python monitor22.py
+v23
+
+updated v24 to fix the "fix"
+
+-----------
+
+plot dots ?
 
 
 

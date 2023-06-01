@@ -8,7 +8,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-results = np.load('results.npy', allow_pickle=True).item()
+results = np.load('shmoo.npy', allow_pickle=True).item()
 
 WL = []
 for (wl, _) in results.keys():
@@ -44,4 +44,5 @@ ylabels = [label for label in WL_map.keys()]
 plt.yticks(yticks, ylabels)
 
 plt.imshow(shmoo)
-plt.show()
+# plt.show()
+plt.savefig('shmoo.png', dpi=300)
