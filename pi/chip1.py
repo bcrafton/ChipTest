@@ -1,8 +1,20 @@
 import machine
+import rp2
 from machine import Pin
 import utime
 
 from util import *
+
+###########################
+
+@rp2.asm_pio(set_init=rp2.PIO.OUT_LOW)
+def clock():
+    wrap_target()
+    set(pins, 1)
+    set(pins, 0)
+    wrap()
+
+###########################
 
 class Chip1:
 
@@ -35,30 +47,39 @@ class Chip1:
             for sel in sels:
                 self.write_cam(tgt=cam, addr=0, din=0, mux=0, sel=sel)
 
-    def run(self, t=10e-9):
-        self.START.value(0); utime.sleep(t)
-        self.CLK.value(0); utime.sleep(t)
+    def run(self, N=None):
+        self.START.value(0)
+        self.CLK.value(0)
 
         if self.DONE.value() == 0:
             print ('Chip already running!')
             return
 
-        self.START.value(1); utime.sleep(t)
-        self.CLK.value(1); utime.sleep(t)
-        self.CLK.value(0); utime.sleep(t)
-        self.START.value(0); utime.sleep(t)
+        self.START.value(1)
+        self.CLK.value(1)
+        self.CLK.value(0)
+        self.START.value(0)
 
         while self.DONE.value():
-            self.CLK.value(1); utime.sleep(t)
-            self.CLK.value(0); utime.sleep(t)
+            self.CLK.value(1)
+            self.CLK.value(0)
 
-        cycles = 0
-        while self.DONE.value() == 0:
-            self.CLK.value(1); utime.sleep(t)
-            self.CLK.value(0); utime.sleep(t)
-            cycles += 1
-        
-        print ('Cycles:', cycles)
+        if N is None:
+            while self.DONE.value() == 0:
+                self.CLK.value(1)
+                self.CLK.value(0)
+        else:
+            for _ in range(N):
+                self.CLK.value(1)
+                self.CLK.value(0)
+
+    def start(self):
+        self.state_machine = rp2.StateMachine(0, clock, freq=125000000, set_base=Pin(14))
+        self.state_machine.active(1)
+
+    def stop(self):
+        self.state_machine.active(0)
+        self.CLK = Pin(14, Pin.OUT)
 
     def write_32b(self, tgt, addr, din):
         wen = [1]

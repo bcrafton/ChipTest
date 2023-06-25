@@ -49,29 +49,29 @@ class Chip2:
 
         self.START = Pin(19, Pin.OUT)
 
-    def rst(self, t=10e-9):
-        self.CLK.value(0);   utime.sleep(t)
-        self.RST.value(1);   utime.sleep(t)
-        self.CS.value(1);    utime.sleep(t)
-        self.SCLK.value(0);  utime.sleep(t)
-        self.MOSI.value(0);  utime.sleep(t)
-        self.START.value(0); utime.sleep(t)
+    def rst(self):
+        self.CLK.value(0)
+        self.RST.value(1)
+        self.CS.value(1)
+        self.SCLK.value(0)
+        self.MOSI.value(0)
+        self.START.value(0)
         
-        self.RST.value(0); utime.sleep(t)
-        self.RST.value(1); utime.sleep(t)
+        self.RST.value(0)
+        self.RST.value(1)
 
-    def run(self, N=100, t=10e-9):
-        self.START.value(0); utime.sleep(t)
-        self.CLK.value(0); utime.sleep(t)
+    def run(self, N=100):
+        self.START.value(0)
+        self.CLK.value(0)
 
-        self.START.value(1); utime.sleep(t)
-        self.CLK.value(1); utime.sleep(t)
-        self.CLK.value(0); utime.sleep(t)
-        self.START.value(0); utime.sleep(t)
+        self.START.value(1)
+        self.CLK.value(1)
+        self.CLK.value(0)
+        self.START.value(0)
 
         for _ in range(N):
-            self.CLK.value(1); utime.sleep(t)
-            self.CLK.value(0); utime.sleep(t)
+            self.CLK.value(1)
+            self.CLK.value(0)
 
     def start(self):
         self.state_machine = rp2.StateMachine(0, clock, freq=125000000, set_base=Pin(20))
@@ -81,7 +81,7 @@ class Chip2:
         self.state_machine.active(0)
         self.CLK = Pin(20, Pin.OUT)
 
-    def write(self, tgt, addr, data, t=10e-9):
+    def write(self, tgt, addr, data):
         wen  = [1]
         tgt  = int_to_bits(val=tgt,  bits=4)
         addr = int_to_bits(val=addr, bits=28)
@@ -93,23 +93,23 @@ class Chip2:
         # bits = wen + tgt + addr + data
         # bits.reverse()
 
-        self.CLK.value(0);  utime.sleep(t)
-        self.MOSI.value(0); utime.sleep(t)
-        self.SCLK.value(0); utime.sleep(t)
+        self.CLK.value(0)
+        self.MOSI.value(0)
+        self.SCLK.value(0)
         
-        self.CS.value(0);   utime.sleep(t)
+        self.CS.value(0)
         self.send(bits)
-        self.CS.value(1);   utime.sleep(t)
+        self.CS.value(1)
 
-        self.CLK.value(1);  utime.sleep(t)
-        self.CLK.value(0);  utime.sleep(t)
-        self.CLK.value(1);  utime.sleep(t)
-        self.CLK.value(0);  utime.sleep(t)
+        self.CLK.value(1)
+        self.CLK.value(0)
+        self.CLK.value(1)
+        self.CLK.value(0)
 
-        self.SCLK.value(1);  utime.sleep(t)
-        self.SCLK.value(0);  utime.sleep(t)
+        self.SCLK.value(1)
+        self.SCLK.value(0)
 
-    def read(self, tgt, addr, t=10e-9):
+    def read(self, tgt, addr):
         ##########################################
         wen  = [0]
         tgt  = int_to_bits(val=tgt,  bits=4)
@@ -122,50 +122,50 @@ class Chip2:
         # bits = wen + tgt + addr + data
         # bits.reverse()
 
-        self.CLK.value(0);  utime.sleep(t)
-        self.MOSI.value(0); utime.sleep(t)
-        self.SCLK.value(0); utime.sleep(t)
+        self.CLK.value(0)
+        self.MOSI.value(0)
+        self.SCLK.value(0)
         
-        self.CS.value(0);   utime.sleep(t)
+        self.CS.value(0)
         self.send(bits)
-        self.CS.value(1);   utime.sleep(t)
+        self.CS.value(1)
 
-        self.CLK.value(1);  utime.sleep(t)
-        self.CLK.value(0);  utime.sleep(t)
-        self.CLK.value(1);  utime.sleep(t)
-        self.CLK.value(0);  utime.sleep(t)
+        self.CLK.value(1)
+        self.CLK.value(0)
+        self.CLK.value(1)
+        self.CLK.value(0)
 
-        self.SCLK.value(1);  utime.sleep(t)
-        self.SCLK.value(0);  utime.sleep(t)
+        self.SCLK.value(1)
+        self.SCLK.value(0)
         ##########################################
         bits = 65 * [0]
 
-        self.CLK.value(0);  utime.sleep(t)
-        self.MOSI.value(0); utime.sleep(t)
-        self.SCLK.value(0); utime.sleep(t)
+        self.CLK.value(0)
+        self.MOSI.value(0)
+        self.SCLK.value(0)
         
-        self.CS.value(0);   utime.sleep(t)
+        self.CS.value(0)
         bits = self.send(bits)
-        self.CS.value(1);   utime.sleep(t)
+        self.CS.value(1)
 
-        self.CLK.value(1);  utime.sleep(t)
-        self.CLK.value(0);  utime.sleep(t)
-        self.CLK.value(1);  utime.sleep(t)
-        self.CLK.value(0);  utime.sleep(t)
+        self.CLK.value(1)
+        self.CLK.value(0)
+        self.CLK.value(1)
+        self.CLK.value(0)
 
-        self.SCLK.value(1);  utime.sleep(t)
-        self.SCLK.value(0);  utime.sleep(t)
+        self.SCLK.value(1)
+        self.SCLK.value(0)
         ##########################################
         dout = bits[0:32]
         dout = bits_to_int(dout)
         return dout
 
-    def send(self, bits, t=10e-9):
+    def send(self, bits):
         assert len(bits) == 65
         out = []
         for bit in bits:
-            out.append( self.MISO.value() ); utime.sleep(t)
-            self.MOSI.value(bit); utime.sleep(t)
-            self.SCLK.value(1); utime.sleep(t)
-            self.SCLK.value(0); utime.sleep(t)
+            out.append( self.MISO.value() )
+            self.MOSI.value(bit)
+            self.SCLK.value(1)
+            self.SCLK.value(0)
         return out
