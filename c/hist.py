@@ -48,7 +48,8 @@ data = np.load('results.npy', allow_pickle=True).item()
 
 hist = True
 cdf = False
-colors = ['red', 'black', 'green', 'silver', 'blue', 'orange', 'pink', 'teal', 'gray', 'yellow', 'brown', 'purple', 'gold', 'cyan', 'wheat', 'navy', 'lightsalmon']
+# https://www.wikipython.com/tkinter-ttk-tix/summary-information/colors/
+colors = ['red', 'black', 'green', 'silver', 'blue', 'orange', 'pink', 'teal', 'gray', 'yellow', 'brown', 'purple', 'gold', 'cyan', 'wheat', 'navy', 'lightsalmon', 'snow', 'ghostwhite', 'whitesmoke', 'gainsboro', 'floralwhite', 'oldlace', 'linen', 'antiquewhite']
 
 for bit in data.keys():
     expected, measured = data[bit]
@@ -63,7 +64,8 @@ for bit in data.keys():
     unique = np.unique(expected)
     for u in unique:
         where = np.where(expected == u)
-        plt.hist(measured[where], bins=range(35, 140), color=colors[u])
+        # plt.hist(measured[where], bins=range(35, 140), color=colors[u])
+        plt.hist(measured[where], bins=range(35, 140))
 
     xticks = np.arange(40, 140 + 1, 25)
     xlabels = xticks / 1.2 / 256 + 0.45
