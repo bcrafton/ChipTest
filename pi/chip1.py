@@ -24,6 +24,9 @@ class Chip1:
 
         self.CLK_SEL = Pin(17, Pin.OUT)
 
+        # start by using MCU clock
+        self.CLK_SEL.value(1)
+
     def rst(self, t=10e-9):
         self.CLK.value(0); utime.sleep(t)
         self.RST.value(1); utime.sleep(t)
@@ -56,10 +59,10 @@ class Chip1:
                self.CLK.value(0)
 
     def start(self):
-        self.CLK_SEL.value(1)
+        self.CLK_SEL.value(0)
 
     def stop(self):
-        self.CLK_SEL.value(0)
+        self.CLK_SEL.value(1)
 
     def write_32b(self, tgt, addr, din):
         wen = [1]
