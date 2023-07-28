@@ -4,12 +4,16 @@ import utime
 
 from board import *
 from chip1 import *
+from clock import *
 
 board = Board()
 board.init()
 
 chip = Chip1()
 chip.rst()
+
+clock = Clock()
+clock.set(110e6)
 
 board.set_voltage('avdd_wl', 525)
 board.set_voltage('vref', 525)
@@ -22,8 +26,6 @@ chip.run(1)
 chip.start()
 utime.sleep(1)
 chip.stop()
-
-print (chip.DONE.value())
 
 N = chip.read_32b(tgt=1, addr=512)
 for i in range(N):

@@ -7,15 +7,6 @@ from util import *
 
 ###########################
 
-@rp2.asm_pio(set_init=rp2.PIO.OUT_LOW)
-def clock():
-    wrap_target()
-    set(pins, 1)
-    set(pins, 0)
-    wrap()
-
-###########################
-
 class Chip1:
 
     def __init__(self):
@@ -27,11 +18,11 @@ class Chip1:
         self.SIN  = Pin(13, Pin.OUT)
         self.SOUT = Pin(16, Pin.IN)
 
-        self.DONE  = Pin(17, Pin.IN)
         self.VLD   = Pin(12, Pin.OUT)
         self.CAP   = Pin( 8, Pin.OUT)
         self.START = Pin(11, Pin.OUT)
-        self.CLK2  = Pin(18, Pin.OUT)
+
+        self.CLK_SEL = Pin(17, Pin.OUT)
 
     def rst(self, t=10e-9):
         self.CLK.value(0); utime.sleep(t)
@@ -51,35 +42,19 @@ class Chip1:
         self.START.value(0)
         self.CLK.value(0)
 
-        if self.DONE.value() == 0:
-            print ('Chip already running!')
-            return
-
         self.START.value(1)
         self.CLK.value(1)
         self.CLK.value(0)
         self.START.value(0)
 
-        while self.DONE.value():
-            self.CLK.value(1)
-            self.CLK.value(0)
-
-        if N is None:
-            while self.DONE.value() == 0:
-                self.CLK.value(1)
-                self.CLK.value(0)
-        else:
-            for _ in range(N):
-                self.CLK.value(1)
-                self.CLK.value(0)
+        self.CLK.value(1)
+        self.CLK.value(0)
 
     def start(self):
-        self.state_machine = rp2.StateMachine(0, clock, freq=125000000, set_base=Pin(14))
-        self.state_machine.active(1)
+        self.CLK_SEL.value(1)
 
     def stop(self):
-        self.state_machine.active(0)
-        self.CLK = Pin(14, Pin.OUT)
+        self.CLK_SEL.value(0)
 
     def write_32b(self, tgt, addr, din):
         wen = [1]
@@ -414,3 +389,4 @@ class Chip1:
             self.SCLK.value(1); utime.sleep(t)
             self.SCLK.value(0); utime.sleep(t)
         return bits
+
