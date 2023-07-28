@@ -5,6 +5,7 @@ import math
 
 def mv_to_code(mv):
     code = math.floor(mv / 1200 * 256)
+    code = min(code, 255)
     return code
 
 def dac_write(sync, sck, mosi, address, data):

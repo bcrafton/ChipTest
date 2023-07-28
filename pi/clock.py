@@ -148,7 +148,7 @@ class Clock:
         clk_reg_changes = calc_freq_registers(f)
 
         # Change whatever needs to change:
-        for key in clk_reg_chadnges.keys():
+        for key in clk_reg_changes.keys():
             clk_reg_base[key] = clk_reg_changes[key]
             print("{:-3}, {:02x}".format(key, clk_reg_changes[key]))
 

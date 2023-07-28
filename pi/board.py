@@ -47,13 +47,13 @@ class Board:
         self.set_voltage('avdd_cim',  820)
         self.set_voltage('avdd_sram', 850)
 
-        self.set_voltage('avdd_bl',   0)
-        self.set_voltage('avdd_wl',   450)
+        self.set_voltage('avdd_bl',   400)
+        self.set_voltage('avdd_wl',   525)
         self.set_voltage('vref',      400)
 
-        self.set_voltage('vb1',       700)
-        self.set_voltage('vb0',       700)
-        self.set_voltage('vbl',       0)
+        self.set_voltage('vb1',       400)
+        self.set_voltage('vb0',       350)
+        self.set_voltage('vbl',       350)
         self.set_voltage('vb_dac',    900)
         
         # self.reset_enable()
