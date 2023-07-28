@@ -139,9 +139,9 @@ clk_reg_base = \
 
 class Clock:
     def __init__(self):
-        SCL = Pin(19)
-        SDA = Pin(18)
-        i2c = I2C(1, scl=SCL, sda=SDA, freq=400_000)
+        self.SCL = Pin(19)
+        self.SDA = Pin(18)
+        self.i2c = I2C(1, scl=self.SCL, sda=self.SDA, freq=400_000)
 
     def set(self, f=110e6):
         # Replace the registers that the function determined:
@@ -155,4 +155,4 @@ class Clock:
         # Write them, I do it in ascending order:
         for reg in sorted(clk_reg_base.keys()):
             word = bytes([reg, clk_reg_base[reg]])
-            i2c.writeto(0x60, bytes(word))
+            self.i2c.writeto(0x60, bytes(word))
