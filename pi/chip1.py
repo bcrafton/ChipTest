@@ -7,6 +7,15 @@ from util import *
 
 ###########################
 
+@rp2.asm_pio(set_init=rp2.PIO.OUT_LOW)
+def clock():
+    wrap_target()
+    set(pins, 1)
+    set(pins, 0)
+    wrap()
+
+###########################
+
 class Chip1:
 
     def __init__(self):
@@ -63,6 +72,14 @@ class Chip1:
 
     def stop(self):
         self.CLK_SEL.value(1)
+
+    def start_pio(self, div=1):
+        self.state_machine = rp2.StateMachine(0, clock, freq=125000000//div, set_base=Pin(14))
+        self.state_machine.active(1)
+
+    def stop_pio(self):
+        self.state_machine.active(0)
+        self.CLK = Pin(14, Pin.OUT)
 
     def write_32b(self, tgt, addr, din):
         wen = [1]

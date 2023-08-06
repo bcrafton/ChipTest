@@ -78,7 +78,7 @@ def calc_freq_registers(freq):
     clk_reg_changes[26] = (mult_p3 >> 8) & 0xff
     # print(mult, div)
     true_freq = 27*mult/div # What we actually got in MHz. Should basically match.
-    # print(true_freq, mult, div)
+    print(true_freq)
     return(clk_reg_changes)
 
 # https://www.skyworksinc.com/Application-Pages/Clockbuilder-Pro-Software
@@ -90,9 +90,9 @@ def calc_freq_registers(freq):
 #
 # (reg. addr) : (reg. value); 1 byte each
 #
-clk_reg_base = \
-{\
+clk_reg_base = {
      2: 0x53,
+     3: 0x00,
      4: 0x20,
      7: 0x00,
     15: 0x00,
@@ -136,6 +136,55 @@ clk_reg_base = \
     183: 0xD2
 }
 
+regs = {
+2: 0x53,
+3: 0x00,
+4: 0x20,
+7: 0x00,
+15: 0x00,
+16: 0x0F,
+17: 0x8C,
+18: 0x8C,
+19: 0x8C,
+20: 0x8C,
+21: 0x8C,
+22: 0x8C,
+23: 0x8C,
+24: 0x02,
+26: 0x00,
+27: 0x04,
+28: 0x00,
+29: 0x0E,
+30: 0xA0,
+31: 0x00,
+32: 0x00,
+33: 0x00,
+42: 0x00,
+43: 0x04,
+44: 0x00,
+45: 0x0E,
+46: 0xA0,
+47: 0x00,
+48: 0x00,
+49: 0x00,
+90: 0x00,
+91: 0x00,
+149: 0x00,
+150: 0x00,
+151: 0x00,
+152: 0x00,
+153: 0x00,
+154: 0x00,
+155: 0x00,
+162: 0x00,
+163: 0x00,
+164: 0x00,
+165: 0x00,
+183: 0xD2,
+}
+
+regs = clk_reg_base
+
 class Clock:
     def __init__(self):
         self.SCL = Pin(19)
@@ -143,75 +192,49 @@ class Clock:
         self.i2c = SoftI2C(scl=self.SCL, sda=self.SDA, freq=100_000)
 
     def set(self, f=110e6):
-        # check status
-        self.status()
-
+        '''
         # Replace the registers that the function determined:
         clk_reg_changes = calc_freq_registers(f)
-        new_regs = {}
-        for key in clk_reg_base.keys():
-            if key in clk_reg_changes.keys():
-                new_regs[key] = clk_reg_changes[key]
-            else:
-                new_regs[key] = clk_reg_base[key]
 
-        # idk
-        self.i2c.writeto(0x60, bytes([16, 0x80]))
-        self.i2c.writeto(0x60, bytes([3, 0xff]))
+        # Change whatever needs to change:
+        for key in clk_reg_changes.keys():
+            clk_reg_base[key] = clk_reg_changes[key]
+            print("{:-3}, {:02x}".format(key, clk_reg_changes[key]))
 
         # Write them, I do it in ascending order:
-        for reg in sorted(new_regs.keys()):
-            word = bytes([reg, new_regs[reg]])
+        for reg in sorted(clk_reg_base.keys()):
+            word = bytes([reg, clk_reg_base[reg]])
             self.i2c.writeto(0x60, bytes(word))
+    
+        for reg in sorted(clk_reg_base.keys()):
+            self.i2c.writeto(0x60, bytes([reg]))
+            ret = self.i2c.readfrom(0x60, 1)
+            ret = int.from_bytes(ret, "big")
+            print (reg, hex(clk_reg_base[reg]), hex(ret))
+        '''
 
-        # idk
-        self.i2c.writeto(0x60, bytes([177, 0xac]))
-        self.i2c.writeto(0x60, bytes([3, 0x00]))
-
-        # read registers
-        for addr in sorted(new_regs.keys()):
-            self.i2c.writeto(0x60, bytes([addr]))
-            read_bytes = self.i2c.readfrom(0x60, 1)
-            read_int = int.from_bytes(read_bytes, "little")
-            if read_int != new_regs[addr]:
-                print ("Reg not configured")
-
-        # check status
-        self.status()
-
-    def status(self):
-        # check status register
         self.i2c.writeto(0x60, bytes([0]))
-        read_bytes = self.i2c.readfrom(0x60, 1)
-        read_int = int.from_bytes(read_bytes, "little")
-        # print (hex(read_int))
-        return read_int
+        ret = self.i2c.readfrom(0x60, 1)
+        ret = int.from_bytes(ret, "little")
+        print (hex(ret))
 
-    def init(self):
-        # check status
-        self.status()
+        #self.i2c.writeto(0x60, bytes([16, 0x80]))
+        #self.i2c.writeto(0x60, bytes([3, 0xff]))
+        #self.i2c.writeto(0x60, bytes([177, 0xac]))
+        #self.i2c.writeto(0x60, bytes([3, 0x00]))
 
-        # idk
-        self.i2c.writeto(0x60, bytes([16, 0x80]))
-        self.i2c.writeto(0x60, bytes([3, 0xff]))
+        self.i2c.writeto(0x60, bytes([0]))
+        ret = self.i2c.readfrom(0x60, 1)
+        ret = int.from_bytes(ret, "little")
+        print (hex(ret))
 
-        # write registers
-        for addr in sorted(clk_reg_base.keys()):
-            val = clk_reg_base[addr]
+        for addr in sorted(regs.keys()):
+            val = regs[addr]
             word = bytes([addr, val])
             self.i2c.writeto(0x60, bytes(word))
 
-        # idk
-        self.i2c.writeto(0x60, bytes([177, 0xac]))
-        self.i2c.writeto(0x60, bytes([3, 0x00]))
-
-        # read registers
-        for addr in sorted(clk_reg_base.keys()):
+        for addr in sorted(regs.keys()):
             self.i2c.writeto(0x60, bytes([addr]))
-            read_bytes = self.i2c.readfrom(0x60, 1)
-            read_int = int.from_bytes(read_bytes, "little")
-            if read_int != clk_reg_base[addr]:
-                print ("Reg not configured")
-
-        # check status
-        self.status()
+            ret = self.i2c.readfrom(0x60, 1)
+            ret = int.from_bytes(ret, "little")
+            print ( hex(ret), hex(regs[addr]) )

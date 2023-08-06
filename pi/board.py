@@ -2,6 +2,7 @@
 from bus_expander import *
 from dac import *
 from util import *
+from clock import *
 
 class Board:
 
@@ -30,6 +31,7 @@ class Board:
         }
 
         self.adc = machine.ADC(28)
+        self.clock = Clock()
 
     def init(self):
         self.CS_EN.value(1);   utime.sleep(1e-3)
@@ -40,11 +42,20 @@ class Board:
         self.MOSI.value(0);    utime.sleep(1e-3)
 
         self.set_enable()
-        
+
+        flag = self.clock.status() == 0x11
+        while not flag:
+            self.reset_enable(); utime.sleep(0.1)
+            self.set_enable();   utime.sleep(0.1)
+            status = self.clock.status()
+            flag = status == 0x11
+            print ( hex(status) )
+        self.clock.set(10e6)
+
         # do 1st one twice, think its some state issue
         self.set_voltage('vdd',       790)
         self.set_voltage('vdd',       790)
-        self.set_voltage('avdd_cim',  820)
+        self.set_voltage('avdd_cim',  810)
         self.set_voltage('avdd_sram', 850)
 
         self.set_voltage('avdd_bl',   400)
@@ -106,5 +117,8 @@ class Board:
     def read_adc(self):
         # https://microcontrollerslab.com/raspberry-pi-pico-adc-tutorial/
         val = self.adc.read_u16()
-        val = val / 2**16 * 3.3 / 22
+        # val = val / 2**16 * 3.3 / 22
         return val
+
+    def set_clock(self, freq):
+        self.clock.set(freq)
