@@ -266,8 +266,8 @@ write_reg( 1 << mux )
 results = {}
 for avdd_cim in [700]:
   for avdd_wl in [525]:
-    for vbl in [275]:
-      for vb1 in [450]:
+    for vbl in [300]:
+      for vb1 in [425]:
         for vb0 in [50]:
 
           set_voltage("avdd_cim", avdd_cim)
