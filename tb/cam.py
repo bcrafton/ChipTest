@@ -12,19 +12,18 @@ board.init()
 chip = Chip1()
 chip.rst()
 
-clock = Clock()
-clock.set(110e6)
+board.set_clock(100e6)
 
 board.set_voltage('avdd_wl', 525)
 board.set_voltage('vref', 525)
 
-code = load('cam')
+code = load('cam_long')
 for i, inst in enumerate(code):
     chip.write_32b(tgt=0, addr=i, din=inst)
 
 chip.run(1)
 chip.start()
-utime.sleep(1)
+utime.sleep(10)
 chip.stop()
 
 N = chip.read_32b(tgt=1, addr=512)
