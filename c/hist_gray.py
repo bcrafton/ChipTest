@@ -46,8 +46,6 @@ def stats(expected, measured):
 
 data = np.load('results.npy', allow_pickle=True).item()
 
-hist = True
-cdf = False
 # https://www.wikipython.com/tkinter-ttk-tix/summary-information/colors/
 colors = ['red', 'black', 'green', 'silver', 'blue', 'orange', 'pink', 'teal', 'gray', 'yellow', 'brown', 'purple', 'gold', 'cyan', 'wheat', 'navy', 'lightsalmon', 'snow', 'ghostwhite', 'whitesmoke', 'gainsboro', 'floralwhite', 'oldlace', 'linen', 'antiquewhite']
 
@@ -57,25 +55,14 @@ for i, key in enumerate(data.keys()):
     acc, out = CIM(xs=measured, ys=expected)
     print (acc, i, key)
 
-    expected = 16 - expected
-    measured = measured * 1.2 / 256 + 0.15
-    measured = measured * 1000
-    measured = measured.astype(int)
-
     unique = np.unique(expected)
-    max_count = 0
+    
+    pdfs = []
     for u in unique:
         where = np.where(expected == u)
-        n, bins, _ = plt.hist(measured[where], bins=range(300, 905, 5))
-        max_count = max(max_count, np.max(n))
+        pdfs.append( measured[where] )
 
-    xticks = [300, 500, 700, 900]
-    plt.xticks(xticks, ['' for _ in xticks])
-
-    yticks = [0, int(max_count * 1.1)]
-    plt.yticks(yticks, ['' for _ in yticks])
-
-    print (xticks, yticks)
+    plt.hist(pdfs, bins=range(0, 128), stacked=True)
 
     plt.gcf().set_size_inches(5, 3)
     plt.savefig("%d_gray.png" % (i), dpi=300)
