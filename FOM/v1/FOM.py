@@ -1,6 +1,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 ######################################
 
@@ -14,11 +15,29 @@ SEARCH = SEARCH / 1e6
 
 ######################################
 
-CAM_VDD = [0.65, 0.70, 0.75, 0.80]
-CAM_FOM = [0.77, 0.98, 1.09, 1.28]
+# CAM_VDD = [0.65, 0.70, 0.75, 0.80]
+# CAM_FOM = [0.77, 0.98, 1.09, 1.28]
 
-CIM_VDD = [0.75, 0.80, 0.85]
-CIM_FOM = [9.98, 9.70, 11.3]
+CAM_RESULTS = pd.read_csv('results.csv')
+CAM_VDD = np.unique( CAM_RESULTS['VOLTAGE'].to_numpy() )
+CAM_FOM = []
+for VDD in CAM_VDD:
+  WHERE = (CAM_RESULTS['VOLTAGE'] == VDD)
+  FOM   = CAM_RESULTS.loc[ WHERE ]['FOM'].to_numpy()
+  CAM_FOM.append( np.min(FOM) )
+
+######################################
+
+# CIM_VDD = [0.75, 0.80, 0.85]
+# CIM_FOM = [9.98, 9.70, 11.3]
+
+CIM_RESULTS = pd.read_csv('cim_results.csv')
+CIM_VDD = np.unique( CIM_RESULTS['VOLTAGE'].to_numpy() )
+CIM_FOM = []
+for VDD in CIM_VDD:
+  WHERE = (CIM_RESULTS['VOLTAGE'] == VDD)
+  FOM   = CIM_RESULTS.loc[ WHERE ]['FOM'].to_numpy()
+  CIM_FOM.append( np.min(FOM) )
 
 ######################################
 

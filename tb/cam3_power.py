@@ -42,7 +42,7 @@ VDDs = [
 results = matrix( len(Ns) * len(VDDs), 7 )
 for n, N in enumerate(Ns):
 
-    code = load('cam_long.%d' % (N))
+    code = load('cam3_long.%d' % (N))
     for i, inst in enumerate(code):
         chip.write_32b(tgt=0, addr=i, din=inst)
 

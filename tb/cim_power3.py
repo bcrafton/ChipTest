@@ -23,14 +23,10 @@ Ns = [200]
 
 # worried about DAC power for power meas ...
 VDDs = [
-(1100, 600, 50),
-(1075, 600, 60),
-(1050, 600, 60),
-(1025, 600, 70),
-(1000, 600, 90),
-( 975, 600, 90),
-( 950, 600, 100),
-( 925, 600, 110),
+(1000, 600, 20),
+( 975, 600, 30),
+( 950, 600, 60),
+( 925, 600, 80),
 ( 900, 600, 120),
 ( 875, 600, 130),
 ( 850, 600, 140),
@@ -44,17 +40,10 @@ VDDs = [
 ( 650, 600, 200),
 ]
 
-VDDs = [
-(1000, 600, 20),
-( 975, 600, 30),
-( 950, 600, 60),
-( 925, 600, 70),
-]
-
 results = matrix( len(Ns) * len(VDDs), 8 )
 for n, N in enumerate(Ns):
 
-    code = load('cim_long.%d' % (N))
+    code = load('cim.32WL.long.%d' % (N))
     for i, inst in enumerate(code):
         chip.write_32b(tgt=0, addr=i, din=inst)
 
@@ -75,10 +64,10 @@ for n, N in enumerate(Ns):
         I = chip.read_32b(tgt=1, addr=513)
         J = chip.read_32b(tgt=1, addr=514)
         K = chip.read_32b(tgt=1, addr=515)
-        ACTIVE = (ITER * 256 * 64 * 50 * N) + (I * 64 * 50 * N) + (J * 50 * N) + (K * N)
+        ACTIVE = (ITER * 16 * 64 * 50 * N) + (I * 64 * 50 * N) + (J * 50 * N) + (K * N)
         TOTAL = 5 * freq * 1e6
         LOW = chip.read_32b(tgt=1, addr=2048)
-        HIGH = chip.read_32b(tgt=1, addr=2048+255)
+        HIGH = chip.read_32b(tgt=1, addr=2048+16)
         POWER = float(input('Enter Power: '))
         
         INDEX = n * len(VDDs) + a
@@ -93,3 +82,5 @@ for n, N in enumerate(Ns):
 
         print (N, avdd_cim, freq, ACTIVE / TOTAL, POWER, LOW, HIGH)
         save("results", results)
+
+

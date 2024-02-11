@@ -24,11 +24,17 @@ board.set_clock(40e6)
 # board.set_voltage('avdd_cim', 850)
 # board.set_voltage('vb_dac', 200)
 # 800
-board.set_voltage('avdd_cim', 800)
-board.set_voltage('vb_dac', 240)
+# board.set_voltage('avdd_cim', 800)
+# board.set_voltage('vb_dac', 240)
 # 750
 # board.set_voltage('avdd_cim', 750)
 # board.set_voltage('vb_dac', 260)
+# 700
+# board.set_voltage('avdd_cim', 700)
+# board.set_voltage('vb_dac', 300)
+# 650
+board.set_voltage('avdd_cim', 650)
+board.set_voltage('vb_dac', 320)
 
 board.set_voltage('vdd', 750)
 board.set_voltage('vbl', 325)

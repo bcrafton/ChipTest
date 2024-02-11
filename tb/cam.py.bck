@@ -12,11 +12,24 @@ board.init()
 chip = Chip1()
 chip.rst()
 
-board.set_clock(50e6)
-board.set_voltage('avdd_wl', 525)
-board.set_voltage('vref', 525)
+board.set_clock(10e6)
+board.set_voltage('vref', 475)
+board.set_voltage('avdd_wl', 500)
+board.set_voltage('avdd_cim', 1150)
 
-code = load('cam3')
+board.set_clock(50e6)
+board.set_voltage('vref', 500)
+board.set_voltage('avdd_wl', 525)
+board.set_voltage('avdd_cim', 1100)
+board.set_voltage('vdd', 1100)
+
+board.set_clock(75e6)
+board.set_voltage('vref', 475)
+board.set_voltage('avdd_wl', 525)
+board.set_voltage('avdd_cim', 1000)
+board.set_voltage('vdd', 1000)
+
+code = load('cam')
 for i, inst in enumerate(code):
     chip.write_32b(tgt=0, addr=i, din=inst)
 

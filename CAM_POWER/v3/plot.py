@@ -5,13 +5,13 @@ import pandas as pd
 
 ##################################
 
-CLOCK = 40e6
+CLOCK = 50e6
 T = 5
 
 ##################################
 
-Ns = [1, 50, 75, 100, 150, 200, 250, 300]
-avdd_cims = [1040, 1050, 1060, 990, 1000, 1010, 940, 950, 960, 890, 900, 910]
+Ns = [1, 300]
+avdd_cims = [1100, 1050, 1000, 950, 900, 850, 800, 750, 700, 650]
 
 RESULTS = np.loadtxt('results', delimiter=',')
 RESULTS = np.reshape(RESULTS, ( len(Ns), len(avdd_cims), 5 ))
@@ -34,10 +34,13 @@ for a, avdd_cim in enumerate(avdd_cims):
   
     MEAS     = DATA[a, n, 4]
     MEAS_REF = REF[a, 4]
-    CURRENT  = (MEAS - MEAS_REF) / 10. / 1000.
+    CURRENT  = (MEAS - MEAS_REF) / 100. / 1000.
     VOLTAGE  = ( 1700 - DATA[a, n, 1] ) / 1000.
-    POWER    = VOLTAGE * CURRENT
 
+    # POWER    = VOLTAGE * CURRENT
+    POWER    = VOLTAGE * (MEAS / 4. / 100. / 1000.)
+    # POWER    = VOLTAGE * CURRENT + VOLTAGE * (MEAS_REF / 4. / 100. / 1000.)
+    
     CYCLES = CLOCK * T
 
     LOOP_REF = CYCLES / REF[a, 2]
@@ -59,21 +62,23 @@ for a, avdd_cim in enumerate(avdd_cims):
 RESULTS = pd.DataFrame.from_dict(RESULTS)
 RESULTS = RESULTS.sort_values(by='UTIL')
 
-VOLTAGE = [0.65, 0.70, 0.75, 0.80]
+##################################
 
-for voltage in VOLTAGE:
-  WHERE = (RESULTS['VOLTAGE'] >= voltage - 0.01) * (RESULTS['VOLTAGE'] <= voltage + 0.01)
-  DATA  = RESULTS.loc[ WHERE ]
-  UTIL  = DATA['UTIL'].to_numpy()
-  FOM   = DATA['FOM'].to_numpy()
-  POWER = DATA['POWER'].to_numpy()
-  plt.plot(UTIL, POWER, label=voltage, marker='.')
-  print(voltage, np.median(FOM))
+RESULTS.to_csv('results.csv', sep=',')
 
-plt.legend()
-# plt.ylabel('FoM (fJ / search / bit)')
-plt.ylabel('Power (uW)')
-plt.xlabel('(%) Active Cycles')
+##################################
+
+VOLTAGE = RESULTS['VOLTAGE'].to_numpy()
+POWER   = RESULTS['POWER'].to_numpy()
+
+order = np.argsort(VOLTAGE)
+VOLTAGE = VOLTAGE[order]
+POWER = POWER[order]
+
+plt.plot(VOLTAGE, POWER, marker='.')
+
+plt.ylabel('Power (mW)')
+plt.xlabel('Voltage')
 plt.savefig('FOM.png', dpi=500)
 
 ##################################

@@ -1,0 +1,108 @@
+import machine
+from machine import Pin
+import utime
+
+from board import *
+from chip1 import *
+from clock import *
+
+board = Board()
+board.init()
+
+chip = Chip1()
+chip.rst()
+
+##############################################
+
+def unique(l):
+    ret = []
+    for item in l:
+        if item not in ret:
+            ret.append(item)
+    return ret
+
+##############################################
+
+code = load('cim_long.50')
+for i, inst in enumerate(code):
+    chip.write_32b(tgt=0, addr=i, din=inst)
+
+##############################################
+'''
+freqs = [20e6, 40e6, 60e6, 80e6, 100e6, 120e6]
+vdds = [650, 700, 750, 800, 850, 900, 950, 1000, 1050]
+vdds = [650, 700, 750, 800]
+vb_dacs = [300, 400, 500, 100, 200]
+vbls = [300, 400]
+vb1s = [400]
+shmoo = matrix( len(freqs) * len(vdds) * len(vbls) * len(vb_dacs) * len(vb1s), 9 )
+'''
+
+# we have seen increasing VB1 work
+# for higher VDD, we want lower VB_DAC 
+'''
+freqs = [120e6]
+vdds = [750]
+vb_dacs = [150]
+vbls = [350]
+vb1s = [400, 450]
+shmoo = matrix( len(freqs) * len(vdds) * len(vbls) * len(vb_dacs) * len(vb1s), 9 )
+'''
+
+'''
+freqs = [20e6, 40e6, 60e6, 80e6, 100e6, 120e6, 140e6]
+vdds = [650, 700, 750, 800, 850, 900, 950, 1000, 1050]
+# vdds = [650, 700, 750, 800]
+vb_dacs = [200, 300, 400]
+vbls = [375]
+vb1s = [450]
+shmoo = matrix( len(freqs) * len(vdds) * len(vbls) * len(vb_dacs) * len(vb1s), 9 )
+'''
+
+freqs = [20e6, 40e6, 60e6, 80e6, 100e6, 120e6, 140e6, 160e6]
+vdds = [650, 700, 750, 800, 850, 900, 950, 1000, 1050]
+vb_dacs = [100, 200, 300, 400]
+vbls = [375]
+vb1s = [450]
+shmoo = matrix( len(freqs) * len(vdds) * len(vbls) * len(vb_dacs) * len(vb1s), 9 )
+
+##############################################
+
+board.set_voltage('avdd_wl', 575)
+board.set_voltage('vref', 525)
+board.set_voltage('avdd_bl', 0)
+
+##############################################
+
+itr = 0
+for freq in freqs:
+    for vdd in vdds:
+        for vbl in vbls:
+            for vb_dac in vb_dacs:
+                for vb1 in vb1s:
+
+                    board.set_voltage('vdd', vdd)
+                    board.set_voltage('avdd_cim', vdd)
+                    board.set_voltage('vb_dac', vb_dac)
+                    board.set_voltage('vbl', vbl)
+                    board.set_voltage('vb1', vb1)
+                    board.set_voltage('vb0', vb1 - 50)
+                    board.set_clock(freq)
+
+                    chip.run(1)
+                    chip.start()
+                    utime.sleep( 5. / freq * 20e6 )
+                    chip.stop()
+                    chip.rst()
+
+                    for i, a in enumerate([0, 1, 3, 7, 15, 31, 63, 127, 255]):
+                        addr = a + 2048
+                        data = chip.read_32b(tgt=1, addr=addr)
+                        shmoo[ itr ][ i ] = data
+                    print (1700 - vdd, freq, vb_dac, vbl, vb1, shmoo[itr])
+                    itr = itr + 1
+
+print (shmoo)
+save("shmoo", shmoo)
+
+##############################################

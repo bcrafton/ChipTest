@@ -12,6 +12,8 @@ board.init()
 chip = Chip1()
 chip.rst()
 
+board.set_clock(40e6)
+
 board.set_voltage('avdd_wl', 500)
 board.set_voltage('vref', 525)
 board.set_voltage('avdd_bl', 0)
@@ -19,51 +21,35 @@ board.set_voltage('avdd_bl', 0)
 board.set_voltage('vdd', 750)
 board.set_voltage('vbl', 325)
 
+Ns = [1, 200]
+VDDs = [
+(950, 120),
+(900, 160),
+(850, 200),
+(800, 240),
+(750, 260),
+(700, 300),
+(650, 300),
+]
+
+'''
 Ns = [200]
-
-# worried about DAC power for power meas ...
 VDDs = [
-(1100, 600, 50),
-(1075, 600, 60),
-(1050, 600, 60),
-(1025, 600, 70),
-(1000, 600, 90),
-( 975, 600, 90),
-( 950, 600, 100),
-( 925, 600, 110),
-( 900, 600, 120),
-( 875, 600, 130),
-( 850, 600, 140),
-( 825, 600, 150),
-( 800, 600, 160),
-( 775, 600, 170),
-( 750, 600, 180),
-( 725, 600, 190),
-( 700, 600, 200),
-( 675, 600, 200),
-( 650, 600, 200),
+(850, 160),
 ]
+'''
 
-VDDs = [
-(1000, 600, 20),
-( 975, 600, 30),
-( 950, 600, 60),
-( 925, 600, 70),
-]
-
-results = matrix( len(Ns) * len(VDDs), 8 )
+results = matrix( len(Ns) * len(VDDs), 7 )
 for n, N in enumerate(Ns):
 
     code = load('cim_long.%d' % (N))
     for i, inst in enumerate(code):
         chip.write_32b(tgt=0, addr=i, din=inst)
 
-    for a, (avdd_cim, vb_dac, freq) in enumerate(VDDs):
+    for a, (avdd_cim, vb_dac) in enumerate(VDDs):
         board.set_voltage('avdd_cim', avdd_cim)
         board.set_voltage('vdd', avdd_cim)
-        # board.set_voltage('vb_dac', vb_dac)
-        board.set_voltage('vb_dac', 1700 - avdd_cim)
-        board.set_clock(freq * 1e6)
+        board.set_voltage('vb_dac', vb_dac)
 
         chip.run(1)
         chip.start()
@@ -76,7 +62,7 @@ for n, N in enumerate(Ns):
         J = chip.read_32b(tgt=1, addr=514)
         K = chip.read_32b(tgt=1, addr=515)
         ACTIVE = (ITER * 256 * 64 * 50 * N) + (I * 64 * 50 * N) + (J * 50 * N) + (K * N)
-        TOTAL = 5 * freq * 1e6
+        TOTAL = 5 * 40e6
         LOW = chip.read_32b(tgt=1, addr=2048)
         HIGH = chip.read_32b(tgt=1, addr=2048+255)
         POWER = float(input('Enter Power: '))
@@ -84,12 +70,11 @@ for n, N in enumerate(Ns):
         INDEX = n * len(VDDs) + a
         results[INDEX][0] = N
         results[INDEX][1] = avdd_cim
-        results[INDEX][2] = freq
-        results[INDEX][3] = ACTIVE
-        results[INDEX][4] = TOTAL
-        results[INDEX][5] = POWER
-        results[INDEX][6] = LOW
-        results[INDEX][7] = HIGH
+        results[INDEX][2] = ACTIVE
+        results[INDEX][3] = TOTAL
+        results[INDEX][4] = POWER
+        results[INDEX][5] = LOW
+        results[INDEX][6] = HIGH
 
-        print (N, avdd_cim, freq, ACTIVE / TOTAL, POWER, LOW, HIGH)
+        print (N, avdd_cim, ACTIVE / TOTAL, POWER, LOW, HIGH)
         save("results", results)
